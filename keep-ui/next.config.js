@@ -21,11 +21,10 @@ const nextConfig = {
   devIndicators: {
     position: "bottom-right",
   },
-  experimental: {
-    turbo: {
-      resolveAlias: turbopackAliases,
-    },
+  turbopack: {
+    resolveAlias: turbopackAliases,
   },
+  experimental: {},
   webpack: (
     config,
     { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }

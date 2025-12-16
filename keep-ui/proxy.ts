@@ -12,7 +12,7 @@ function isMobileDevice(userAgent: string): boolean {
   );
 }
 
-export const middleware = auth(async (request) => {
+export const proxy = auth(async (request) => {
   const { pathname, searchParams } = request.nextUrl;
 
   // go to temporary placeholder for mobile devices
@@ -113,3 +113,4 @@ export const config = {
     "/((?!keep_big\\.svg$|gnip\\.webp|api/aws-marketplace$|api/auth|monitoring|_next/static|_next/image|favicon\\.ico|icons|keep\\.svg|api/provider-images).*)",
   ],
 };
+
