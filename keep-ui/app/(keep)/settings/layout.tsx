@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: any }) {
       <main className="flex flex-col h-full">
         <div className="mb-4">
           <PageTitle>Settings</PageTitle>
-          <PageSubtitle>Setup and configure Keep</PageSubtitle>
+          <PageSubtitle>Setup and configure Continuum</PageSubtitle>
         </div>
         {children}
       </main>

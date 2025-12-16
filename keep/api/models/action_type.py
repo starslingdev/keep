@@ -43,3 +43,7 @@ class ActionType(enum.Enum):
     INCIDENT_STATUS_CHANGE = "Incident status changed"
     INCIDENT_ASSIGN = "Incident assigned"
     INCIDENT_UNENRICH = "Incident enriched"
+    # AI remediation
+    AI_REMEDIATION_STARTED = "AI remediation started"
+    AI_REMEDIATION_COMPLETED = "AI remediation completed"
+    AI_REMEDIATION_FAILED = "AI remediation failed"

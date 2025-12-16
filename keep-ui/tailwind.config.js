@@ -23,19 +23,19 @@ module.exports = {
         "screen-minus-200": "calc(100vh - 200px)",
       },
       colors: {
-        // light mode
+        // light mode - Continuum space theme (violet/purple)
         tremor: {
           brand: {
-            faint: "rgb(255 247 237)", // orange-50
-            muted: "rgb(255 237 213)", // orange-200
-            subtle: "rgb(251 146 60)", // orange-400
-            DEFAULT: "rgb(249 115 22)", // orange-500
+            faint: "rgb(245 243 255)", // violet-50
+            muted: "rgb(221 214 254)", // violet-200
+            subtle: "rgb(167 139 250)", // violet-400
+            DEFAULT: "rgb(139 92 246)", // violet-500
             emphasis: "#374151", //  gray-700
             inverted: "#ffffff", // white
           },
           background: {
             muted: "#f9fafb", // gray-50
-            subtle: "#f9fafb", // orange-200
+            subtle: "#f9fafb", // gray-50
             DEFAULT: "#ffffff", // white
             emphasis: "#374151", // gray-700
           },
@@ -53,14 +53,14 @@ module.exports = {
             inverted: "#ffffff", // white
           },
         },
-        // dark mode
+        // dark mode - Continuum space theme (cyan/violet)
         "dark-tremor": {
           brand: {
-            faint: "#0B1229", // custom
-            muted: "#172554", // blue-950
-            subtle: "#1e40af", // blue-800
-            DEFAULT: "#3b82f6", // blue-500
-            emphasis: "#60a5fa", // blue-400
+            faint: "#0f0d1a", // custom dark purple
+            muted: "#1e1b4b", // indigo-950
+            subtle: "#4f46e5", // indigo-600
+            DEFAULT: "#8b5cf6", // violet-500
+            emphasis: "#a78bfa", // violet-400
             inverted: "#030712", // gray-950
           },
           background: {

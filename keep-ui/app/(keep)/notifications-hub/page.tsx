@@ -9,6 +9,6 @@ export default function Page() {
 }
 
 export const metadata = {
-  title: "Keep - Notifications Hub",
+  title: "Continuum - Notifications Hub",
   description: "Manage everything related with notifications.",
 };

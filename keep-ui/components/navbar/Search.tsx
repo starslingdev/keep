@@ -13,11 +13,7 @@ import {
   Popover,
   Transition,
 } from "@headlessui/react";
-import {
-  GitHubLogoIcon,
-  FileTextIcon,
-  TwitterLogoIcon,
-} from "@radix-ui/react-icons";
+import { FileTextIcon } from "@radix-ui/react-icons";
 import {
   GlobeAltIcon,
   UserGroupIcon,
@@ -31,7 +27,7 @@ import { MdOutlineEngineering, MdOutlineSearchOff } from "react-icons/md";
 import { useConfig } from "utils/hooks/useConfig";
 import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
-import KeepPng from "../../keep.png";
+import ContinuumLogo from "../../public/keep.svg";
 
 const NAVIGATION_OPTIONS = [
   {
@@ -111,21 +107,9 @@ export const Search = ({ session }: SearchProps) => {
   const EXTERNAL_OPTIONS = [
     {
       icon: FileTextIcon,
-      label: "Keep Docs",
+      label: "Documentation",
       shortcut: ["⇧", "D"],
       navigate: docsUrl,
-    },
-    {
-      icon: GitHubLogoIcon,
-      label: "Keep Source code",
-      shortcut: ["⇧", "C"],
-      navigate: "https://github.com/keephq/keep",
-    },
-    {
-      icon: TwitterLogoIcon,
-      label: "Keep Twitter",
-      shortcut: ["⇧", "T"],
-      navigate: "https://twitter.com/keepalerting",
     },
   ];
 
@@ -199,7 +183,7 @@ export const Search = ({ session }: SearchProps) => {
     if (query.length && queriedOptions.length === 0) {
       return (
         <ListItem className="flex flex-col items-center justify-center cursor-default select-none px-4 py-2 text-gray-700 h-72">
-          <Icon color="orange" size="xl" icon={MdOutlineSearchOff} />
+          <Icon color="violet" size="xl" icon={MdOutlineSearchOff} />
           Nothing found.
         </ListItem>
       );
@@ -219,13 +203,13 @@ export const Search = ({ session }: SearchProps) => {
               value={option.navigate}
             >
               {({ active }) => (
-                <ListItem className="flex items-center justify-start space-x-3 cursor-default select-none p-2 ui-active:bg-orange-400 ui-active:text-white ui-not-active:text-gray-900">
+                <ListItem className="flex items-center justify-start space-x-3 cursor-default select-none p-2 ui-active:bg-violet-500 ui-active:text-white ui-not-active:text-gray-900">
                   <Icon
                     className={`py-2 px-0 ${
-                      active ? "bg-orange-400 text-white" : "text-gray-900"
+                      active ? "bg-violet-500 text-white" : "text-gray-900"
                     }`}
                     icon={option.icon}
-                    color="orange"
+                    color="violet"
                   />
                   <span className="text-left">{option.label}</span>
                 </ListItem>
@@ -257,13 +241,13 @@ export const Search = ({ session }: SearchProps) => {
               value={option.navigate}
             >
               {({ active }) => (
-                <ListItem className="flex items-center justify-start space-x-3 cursor-default select-none p-2 ui-active:bg-orange-400 ui-active:text-white ui-not-active:text-gray-900">
+                <ListItem className="flex items-center justify-start space-x-3 cursor-default select-none p-2 ui-active:bg-violet-500 ui-active:text-white ui-not-active:text-gray-900">
                   <Icon
                     className={`py-2 px-0 ${
-                      active ? "bg-orange-400 text-white" : "text-gray-900"
+                      active ? "bg-violet-500 text-white" : "text-gray-900"
                     }`}
                     icon={option.icon}
-                    color="orange"
+                    color="violet"
                   />
                   <span className="text-left">{option.label}</span>
                 </ListItem>
@@ -273,7 +257,7 @@ export const Search = ({ session }: SearchProps) => {
         </List>
         <List>
           <ListItem className="pl-2">
-            <Subtitle>External Sources</Subtitle>
+            <Subtitle>Resources</Subtitle>
           </ListItem>
           {EXTERNAL_OPTIONS.map((option) => (
             <ComboboxOption
@@ -282,13 +266,13 @@ export const Search = ({ session }: SearchProps) => {
               value={option.navigate}
             >
               {({ active }) => (
-                <ListItem className="flex items-center justify-start space-x-3 cursor-default select-none p-2 ui-active:bg-orange-400 ui-active:text-white ui-not-active:text-gray-900">
+                <ListItem className="flex items-center justify-start space-x-3 cursor-default select-none p-2 ui-active:bg-violet-500 ui-active:text-white ui-not-active:text-gray-900">
                   <Icon
                     className={`py-2 px-0 ${
-                      active ? "bg-orange-400 text-white" : "text-gray-900"
+                      active ? "bg-violet-500 text-white" : "text-gray-900"
                     }`}
                     icon={option.icon}
-                    color="orange"
+                    color="violet"
                   />
                   <span className="text-left">{option.label}</span>
                 </ListItem>
@@ -344,7 +328,7 @@ export const Search = ({ session }: SearchProps) => {
                   className="focus:outline-none flex items-center"
                   disabled={isLoading}
                 >
-                  <Image className="w-8" src={KeepPng} alt="Keep Logo" />
+                  <Image className="w-8" src={ContinuumLogo} alt="Continuum Logo" />
                   {tenantLogoUrl && (
                     <Image
                       src={tenantLogoUrl || ""}
@@ -366,7 +350,7 @@ export const Search = ({ session }: SearchProps) => {
                         key={tenant.tenant_id}
                         className={`block w-full text-left px-4 py-2 text-sm ${
                           tenant.tenant_id === session.tenantId
-                            ? "bg-orange-50 text-orange-700 font-medium"
+                            ? "bg-violet-50 text-violet-700 font-medium"
                             : "text-gray-700 hover:bg-gray-50"
                         }`}
                         onClick={() => switchTenant(tenant.tenant_id)}
@@ -384,7 +368,7 @@ export const Search = ({ session }: SearchProps) => {
           </Popover>
         ) : (
           <Link href="/" className="flex items-center">
-            <Image className="w-8" src={KeepPng} alt="Keep Logo" />
+            <Image className="w-8" src={ContinuumLogo} alt="Continuum Logo" />
             {hasTenantLogo && (
               <Image
                 src={tenantLogoUrl || ""}
@@ -418,7 +402,7 @@ export const Search = ({ session }: SearchProps) => {
               <ComboboxInput
                 className="z-20 tremor-TextInput-root relative flex items-center w-full outline-none rounded-tremor-default transition duration-100 border shadow-tremor-input dark:shadow-dark-tremor-input bg-tremor-background dark:bg-dark-tremor-background hover:bg-tremor-background-muted dark:hover:bg-dark-tremor-background-muted text-tremor-content dark:text-dark-tremor-content border-tremor-border dark:border-dark-tremor-border tremor-TextInput-input bg-transparent focus:outline-none focus:ring-0 text-tremor-default py-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none pr-3 pl-3 placeholder:text-tremor-content dark:placeholder:text-dark-tremor-content"
                 placeholder={placeholderText}
-                color="orange"
+                color="violet"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 ref={comboboxInputRef}

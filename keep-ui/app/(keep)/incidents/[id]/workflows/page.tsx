@@ -22,7 +22,7 @@ export async function generateMetadata(props: PageProps) {
   const incidentDescription =
     incident.user_summary || incident.generated_summary;
   return {
-    title: `Keep — ${incidentName} — Workflows`,
+    title: `Continuum — ${incidentName} — Workflows`,
     description: incidentDescription,
   };
 }

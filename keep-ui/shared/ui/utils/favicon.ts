@@ -7,15 +7,15 @@ export function setFavicon(status: string) {
 
   switch (status) {
     case "success":
-      favicon.href = "/keep-success.png";
+      favicon.href = "/continuum-success.svg";
       break;
     case "failure":
-      favicon.href = "/keep-failure.png";
+      favicon.href = "/continuum-failure.svg";
       break;
     case "pending":
-      favicon.href = "/keep-pending.png";
+      favicon.href = "/continuum-pending.svg";
       break;
     default:
-      favicon.href = "/favicon.ico";
+      favicon.href = "/icon.svg";
   }
 }

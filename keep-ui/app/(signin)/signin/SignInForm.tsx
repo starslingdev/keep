@@ -239,6 +239,18 @@ export default function SignInForm({
               ? "Redirecting..."
               : "Sign in"}
           </Button>
+          
+          <div className="text-center mt-4">
+            <Text className="text-sm text-gray-600">
+              Don't have an account?{" "}
+              <a
+                href="/signup"
+                className="text-orange-600 hover:text-orange-700 font-medium"
+              >
+                Sign up for free
+              </a>
+            </Text>
+          </div>
         </form>
       </>
     );

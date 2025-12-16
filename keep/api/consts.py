@@ -54,3 +54,15 @@ else:
 OPENAI_MODEL_NAME = os.environ.get("OPENAI_MODEL_NAME", "gpt-4o-2024-08-06")
 
 KEEP_CORRELATION_ENABLED = os.environ.get("KEEP_CORRELATION_ENABLED", "true") == "true"
+
+# AI Remediation Feature Flags and Configuration
+KEEP_AI_REMEDIATION_ENABLED = os.environ.get("KEEP_ENABLE_AI_REMEDIATION", "false") == "true"
+# GitHub PR creation (optional - future feature)
+KEEP_AI_CREATE_GITHUB_PR = os.environ.get("KEEP_AI_CREATE_GITHUB_PR", "false") == "true"
+GITHUB_APP_ID = os.environ.get("GITHUB_APP_ID")
+GITHUB_PRIVATE_KEY = os.environ.get("GITHUB_PRIVATE_KEY")
+GITHUB_PRIVATE_KEY_PATH = os.environ.get("GITHUB_PRIVATE_KEY_PATH")
+# Sentry integration (optional)
+SENTRY_AUTH_TOKEN = os.environ.get("SENTRY_AUTH_TOKEN")
+SENTRY_DEFAULT_ORG = os.environ.get("SENTRY_DEFAULT_ORG")
+AI_REMEDIATION_SERVICE_MAPPING = os.environ.get("AI_REMEDIATION_SERVICE_MAPPING", "{}")

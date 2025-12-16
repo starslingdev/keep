@@ -1,0 +1,26 @@
+FROM node:20-alpine AS base
+
+# Production image, copy pre-built files
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy pre-built .next directory from keep-ui/
+COPY .next/standalone ./
+COPY .next/static ./.next/static
+COPY public ./public
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "server.js"]
+

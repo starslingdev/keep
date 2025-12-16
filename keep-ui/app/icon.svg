@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="spaceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="cGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#a855f7"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#spaceGrad)"/>
+  <circle cx="12" cy="12" r="1.5" fill="#fff" opacity="0.7"/>
+  <circle cx="52" cy="14" r="1" fill="#fff" opacity="0.5"/>
+  <circle cx="50" cy="50" r="1.5" fill="#fff" opacity="0.6"/>
+  <circle cx="14" cy="48" r="1" fill="#fff" opacity="0.4"/>
+  <path d="M 40 18 A 16 16 0 1 0 40 46 L 40 40 A 10 10 0 1 1 40 24 Z" fill="url(#cGrad)"/>
+  <ellipse cx="32" cy="32" rx="20" ry="6" fill="none" stroke="#00d4ff" stroke-width="2" opacity="0.5" transform="rotate(-20 32 32)"/>
+  <circle cx="44" cy="24" r="3" fill="#00d4ff"/>
+  <circle cx="44" cy="24" r="1.5" fill="#fff"/>
+</svg>

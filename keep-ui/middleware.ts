@@ -47,10 +47,11 @@ export const middleware = auth(async (request) => {
     return NextResponse.next();
   }
 
-  // If not authenticated and not on signin page, redirect to signin
+  // If not authenticated and not on signin/signup page, redirect to signin
   if (
     !isAuthenticated &&
     !pathname.startsWith("/signin") &&
+    !pathname.startsWith("/signup") &&
     !pathname.startsWith("/health") &&
     !pathname.startsWith("/error") &&
     !pathname.startsWith("/api/healthcheck")

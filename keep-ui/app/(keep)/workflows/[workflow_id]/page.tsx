@@ -11,6 +11,6 @@ export default async function Page(props: {
 }
 
 export const metadata: Metadata = {
-  title: "Keep - Workflow Executions",
+  title: "Continuum - Workflow Executions",
   description: "View and manage workflow executions.",
 };

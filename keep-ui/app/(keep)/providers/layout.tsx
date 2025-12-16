@@ -13,7 +13,7 @@ export default function ProvidersLayout({ children }: PropsWithChildren) {
         <header>
           <PageTitle>Providers</PageTitle>
           <PageSubtitle>
-            Connect monitoring services for Keep to ingest alerts, and other
+            Connect monitoring services to ingest alerts, and other
             integrations to automate your workflows.
           </PageSubtitle>
         </header>

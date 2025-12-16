@@ -18,6 +18,7 @@ import { Link } from "@/components/ui";
 import { useProviders } from "@/utils/hooks/useProviders";
 // feature not supposed to import other features, TODO: move alert-menu to entities or shared
 import { AlertMenu } from "@/features/alerts/alert-menu";
+import { AiRemediationButton } from "@/features/alerts/ai-remediation-button/ui/AiRemediationButton";
 import { useConfig } from "@/utils/hooks/useConfig";
 import { DOCS_CLIPBOARD_COPY_ERROR_PATH } from "@/shared/constants";
 import CollapsibleIncidentsList from "./alert-sidebar-incidents";
@@ -148,16 +149,30 @@ export const AlertSidebar = ({
                 </Dialog.Title>
                 <Divider className="mb-0" />
                 {alert && (
-                  <AlertMenu
-                    alert={alert}
-                    presetName="feed"
-                    isInSidebar={true}
-                    setRunWorkflowModalAlert={setRunWorkflowModalAlert}
-                    setDismissModalAlert={setDismissModalAlert}
-                    setChangeStatusAlert={setChangeStatusAlert}
-                    setIsIncidentSelectorOpen={setIsIncidentSelectorOpen}
-                    toggleSidebar={toggle}
-                  />
+                  <>
+                    <AlertMenu
+                      alert={alert}
+                      presetName="feed"
+                      isInSidebar={true}
+                      setRunWorkflowModalAlert={setRunWorkflowModalAlert}
+                      setDismissModalAlert={setDismissModalAlert}
+                      setChangeStatusAlert={setChangeStatusAlert}
+                      setIsIncidentSelectorOpen={setIsIncidentSelectorOpen}
+                      toggleSidebar={toggle}
+                    />
+                    <div className="mt-3">
+                      <AiRemediationButton
+                        alertId={alert.fingerprint}
+                        existingRemediation={{
+                          ai_remediation_status: alert.ai_remediation_status as any,
+                          ai_pr_url: alert.ai_pr_url,
+                          ai_rca_summary: alert.ai_rca_summary,
+                          ai_error_message: alert.ai_error_message,
+                        }}
+                        onRemediationStarted={handleRefresh}
+                      />
+                    </div>
+                  </>
                 )}
               </div>
               <div>

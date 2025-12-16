@@ -53,6 +53,7 @@ from keep.api.routes import (
     pusher,
     rules,
     settings,
+    signup,
     status,
     tags,
     topology,
@@ -291,6 +292,7 @@ def get_app(
     app.include_router(providers.router, prefix="/providers", tags=["providers"])
     app.include_router(actions.router, prefix="/actions", tags=["actions"])
     app.include_router(ai.router, prefix="/ai", tags=["ai"])
+    app.include_router(signup.router, prefix="/public", tags=["public"])
     app.include_router(healthcheck.router, prefix="/healthcheck", tags=["healthcheck"])
     app.include_router(alerts.router, prefix="/alerts", tags=["alerts"])
     app.include_router(incidents.router, prefix="/incidents", tags=["incidents"])

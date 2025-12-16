@@ -20,6 +20,7 @@ import { CopilotKit } from "@copilotkit/react-core";
 import { TbInfoCircle, TbTopologyStar3 } from "react-icons/tb";
 import { useConfig } from "@/utils/hooks/useConfig";
 import { TicketingIncidentOptions } from "./ticketing-incident-options";
+import { AiRemediationButton } from "@/features/alerts/ai-remediation-button/ui/AiRemediationButton";
 
 export function IncidentHeader({
   incident: initialIncidentData,
@@ -102,6 +103,17 @@ export function IncidentHeader({
               >
                 Run Workflow
               </Button>
+              <div className="mr-2">
+                <AiRemediationButton
+                  incidentId={incident.id}
+                  existingRemediation={{
+                    ai_remediation_status: (incident as any).ai_remediation_status,
+                    ai_pr_url: (incident as any).ai_pr_url,
+                    ai_rca_summary: (incident as any).ai_rca_summary,
+                    ai_error_message: (incident as any).ai_error_message,
+                  }}
+                />
+              </div>
               <Button
                 color="orange"
                 size="xs"

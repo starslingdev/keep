@@ -2,8 +2,8 @@ import { Card, Text } from "@tremor/react";
 import Image from "next/image";
 
 export const metadata = {
-  title: "Keep",
-  description: "The open-source alert management and AIOps platform",
+  title: "Continuum",
+  description: "Intelligent alert management and AIOps platform",
 };
 
 export default function RootLayout({
@@ -19,20 +19,20 @@ export default function RootLayout({
             <div className="flex items-center gap-3">
               <Image
                 src="/keep_big.svg"
-                alt="Keep Logo"
+                alt="Continuum Logo"
                 width={48}
                 height={48}
                 priority
                 className="object-contain h-full"
               />
               <Text className="text-tremor-title font-bold text-tremor-content-strong">
-                Keep
+                Continuum
               </Text>
             </div>
             <Card
               className="w-full max-w-md p-8 min-w-96 flex flex-col gap-6 items-center"
               decoration="top"
-              decorationColor="orange"
+              decorationColor="violet"
             >
               {children}
             </Card>
