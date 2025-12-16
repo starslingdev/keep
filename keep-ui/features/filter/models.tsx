@@ -3,10 +3,10 @@ export type FacetState = Record<string, any | null>;
 export interface FacetConfig {
   canHitEmptyState?: boolean;
   checkedByDefaultOptionValues?: string[];
-  renderOptionIcon?: (facetOption: FacetOptionDto) => JSX.Element | undefined;
+  renderOptionIcon?: (facetOption: FacetOptionDto) => React.ReactElement | undefined;
   renderOptionLabel?: (
     facetOption: FacetOptionDto
-  ) => JSX.Element | string | undefined;
+  ) => React.ReactElement | string | undefined;
   sortCallback?: (facetOption: FacetOptionDto) => number;
 }
 

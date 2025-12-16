@@ -68,6 +68,14 @@ export interface AlertDto {
 
   // From AlertWithIncidentLinkMetadataDto
   is_created_by_ai?: boolean;
+
+  // AI Remediation fields
+  ai_remediation_status?: "pending" | "success" | "failed";
+  ai_pr_url?: string;
+  ai_rca_summary?: string;
+  ai_error_message?: string;
+  ai_rca_full_report?: string;
+  ai_repo_resolved?: string;
 }
 
 export interface AlertToWorkflowExecution {

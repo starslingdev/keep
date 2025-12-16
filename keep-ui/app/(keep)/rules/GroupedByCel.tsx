@@ -15,7 +15,7 @@ export const GroupedByCell = ({ fields }: GroupedByCellProps) => {
     fieldsInTooltip = fields.slice(1);
   }
 
-  function renderFields(fields: string[]): JSX.Element[] | JSX.Element {
+  function renderFields(fields: string[]): React.ReactElement[] | React.ReactElement {
     return fields.map((group, index) => (
       <>
         <Badge color="orange" key={group}>

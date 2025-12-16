@@ -28,11 +28,11 @@ export interface FacetsPanelProps {
   renderFacetOptionLabel?: (
     facetName: string,
     optionDisplayName: string
-  ) => JSX.Element | string | undefined;
+  ) => React.ReactElement | string | undefined;
   renderFacetOptionIcon?: (
     facetName: string,
     optionDisplayName: string
-  ) => JSX.Element | undefined;
+  ) => React.ReactElement | undefined;
   onCelChange?: (cel: string) => void;
   onAddFacet: () => void;
   onDeleteFacet: (facetId: string) => void;

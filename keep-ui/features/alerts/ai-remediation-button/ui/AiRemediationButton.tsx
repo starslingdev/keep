@@ -48,8 +48,7 @@ export function AiRemediationButton({
       });
 
       showSuccessToast(
-        `AI remediation started! ${response.message}`,
-        "Analyzing..."
+        `AI remediation started! ${response.message}`
       );
 
       // Notify parent component

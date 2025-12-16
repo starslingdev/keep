@@ -18,7 +18,7 @@ type LinkWithIconProps = {
   testId?: string;
   isExact?: boolean;
   iconClassName?: string;
-  renderBeforeCount?: () => JSX.Element | undefined;
+  renderBeforeCount?: () => React.ReactElement | undefined;
   onIconClick?: (e: React.MouseEvent) => void;
 } & LinkProps &
   AnchorHTMLAttributes<HTMLAnchorElement>;

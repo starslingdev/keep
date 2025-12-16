@@ -9,8 +9,8 @@ export interface FacetValueProps {
   isSelected: boolean;
   isSelectable: boolean;
   showIcon: boolean;
-  renderLabel?: () => JSX.Element | string | undefined;
-  renderIcon?: () => JSX.Element | undefined;
+  renderLabel?: () => React.ReactElement | string | undefined;
+  renderIcon?: () => React.ReactElement | undefined;
   onSelectOneOption: (value: string) => void;
   onSelectAllOptions: () => void;
   onToggleOption: (value: string) => void;
