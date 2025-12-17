@@ -161,6 +161,17 @@ const nextConfig = {
       process.env.VERCEL_ENV === "production" ||
       process.env.NODE_ENV === "production";
 
+    // Get API URL for proxying public endpoints
+    const apiUrl = process.env.API_URL || "http://localhost:8080";
+    
+    const publicApiRewrites = [
+      {
+        // Proxy /api/public/* to backend for signup, etc.
+        source: "/api/public/:path*",
+        destination: `${apiUrl}/public/:path*`,
+      },
+    ];
+
     if (isVercelProdDeploy) {
       return {
         beforeFiles: [
@@ -169,10 +180,13 @@ const nextConfig = {
             destination: "/404",
           },
         ],
+        afterFiles: publicApiRewrites,
       };
     }
 
-    return [];
+    return {
+      afterFiles: publicApiRewrites,
+    };
   },
 };
 
