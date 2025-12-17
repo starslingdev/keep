@@ -215,60 +215,39 @@ aws logs tail /ecs/prod-continuum-backend --follow
 
 ---
 
-## Quick Start (Copy-Paste)
+## Complete Deployment (Copy-Paste)
 
 ```bash
 #!/bin/bash
 set -e
 
-# Configuration
-export AWS_REGION=us-east-1
-export AWS_ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
-export ECR=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com
-export DB_PASSWORD="ChangeMe$(openssl rand -base64 12)"
+cd /Users/ali/Projects/keep
 
-# 1. Create ECR repos
-echo "Creating ECR repositories..."
-aws ecr create-repository --repository-name keep-backend --region $AWS_REGION 2>/dev/null || true
-aws ecr create-repository --repository-name keep-frontend --region $AWS_REGION 2>/dev/null || true
+echo "🚀 Complete Continuum Deployment to AWS"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# 2. Build and push
-echo "Building images..."
-docker build -f docker/Dockerfile.api -t $ECR/keep-backend:latest .
-docker build -f docker/Dockerfile.ui -t $ECR/keep-frontend:latest ./keep-ui
+# 1. Build and push images FIRST
+echo "Step 1: Building and pushing Docker images..."
+./scripts/build_and_push.sh
 
-echo "Pushing to ECR..."
-aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR
-docker push $ECR/keep-backend:latest
-docker push $ECR/keep-frontend:latest
+# 2. Deploy infrastructure
+echo ""
+echo "Step 2: Deploying CloudFormation stack..."
+export DB_PASSWORD="Keep$(openssl rand -base64 12 | tr -d '/+=')!"
+echo "Database password: $DB_PASSWORD"
+echo "(Save this!)"
+echo ""
 
-# 3. Deploy infrastructure
-echo "Deploying CloudFormation stack..."
-aws cloudformation deploy \
-  --template-file aws-cloudformation.yaml \
-  --stack-name continuum-prod \
-  --parameter-overrides \
-      Environment=prod \
-      DatabasePassword=$DB_PASSWORD \
-  --capabilities CAPABILITY_IAM \
-  --region $AWS_REGION
+./scripts/deploy_cloudformation.sh
 
-# 4. Get URL
-echo "
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Deployment Complete!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Your Continuum instance:"
+# 3. Done!
+echo ""
+echo "✅ Deployment complete!"
 aws cloudformation describe-stacks \
   --stack-name continuum-prod \
-  --query 'Stacks[0].Outputs' \
-  --output table
-
-echo "
-Share the SignupURL with customers to get started!
-"
+  --query 'Stacks[0].Outputs[?OutputKey==`SignupURL`].OutputValue' \
+  --output text
 ```
 
-Save as `deploy.sh`, then run: `chmod +x deploy.sh && ./deploy.sh`
+**Critical**: Images must be in ECR BEFORE CloudFormation runs!
 

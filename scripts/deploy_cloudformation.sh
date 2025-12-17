@@ -28,14 +28,25 @@ echo "☁️  Deploying CloudFormation stack..."
 echo "(This will take ~10-15 minutes...)"
 echo ""
 
+# Check if stack exists in ROLLBACK_COMPLETE state and delete it
+STACK_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].StackStatus' --output text 2>&1 || echo "DOES_NOT_EXIST")
+
+if [ "$STACK_STATUS" = "ROLLBACK_COMPLETE" ]; then
+  echo "Stack is in ROLLBACK_COMPLETE state, deleting first..."
+  aws cloudformation delete-stack --stack-name $STACK_NAME
+  aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME
+  echo "✓ Old stack deleted, proceeding with fresh deployment"
+  echo ""
+fi
+
 aws cloudformation deploy \
   --template-file aws-cloudformation.yaml \
   --stack-name $STACK_NAME \
   --parameter-overrides \
       Environment=$ENVIRONMENT \
       DatabasePassword=$DB_PASSWORD \
-      GitHubAppId="" \
-      SentryAuthToken="" \
+      GitHubAppId="${GITHUB_APP_ID:-}" \
+      AnthropicApiKey="${ANTHROPIC_API_KEY:-}" \
   --capabilities CAPABILITY_IAM \
   --region $AWS_REGION
 

@@ -22,7 +22,7 @@ from keep.api.consts import (
 from keep.api.core.db import (
     _enrich_entity,
     get_alerts_by_fingerprint,
-    get_incident,
+    get_incident_by_id,
 )
 from keep.api.models.action_type import ActionType
 from keep.api.models.ai_remediation import AIRemediationEnrichment, RCAReport
@@ -40,7 +40,7 @@ class AIRemediationBl:
         self.tenant_id = tenant_id
         self.session = session
         self.rca_generator = RCAGenerator()
-        self.sentry_fetcher = SentryEvidenceFetcher()
+        self.sentry_fetcher = SentryEvidenceFetcher(tenant_id=tenant_id)
         
         # Initialize GitHub PR creator if configured (optional feature)
         self.github_pr_creator = None
@@ -116,8 +116,7 @@ class AIRemediationBl:
             
             alerts_dto = convert_db_alerts_to_dto_alerts(
                 db_alerts,
-                with_incidents=True,
-                session=self.session,
+                with_incidents=False,  # Don't load incidents for RCA
             )
             
             alert = alerts_dto[0]
@@ -132,22 +131,24 @@ class AIRemediationBl:
             
         elif entity_type == "incident":
             # Fetch incident
-            incident_dto = get_incident(
+            incident = get_incident_by_id(
                 tenant_id=self.tenant_id,
                 incident_id=entity_id,
+                with_alerts=True,
+                session=self.session,
             )
             
-            if not incident_dto:
+            if not incident:
                 raise ValueError(f"Incident {entity_id} not found")
             
-            # Fetch associated alerts
-            # TODO: Implement fetching incident alerts
+            # Convert to DTO
+            incident_dto = IncidentDto.from_db_incident(incident)
             
             return {
                 "type": "incident",
                 "id": entity_id,
                 "incident": incident_dto,
-                "enrichments": {},  # TODO: Get incident enrichments
+                "enrichments": {},
             }
         
         else:

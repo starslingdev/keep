@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -12,7 +16,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "types": [],
     "plugins": [
@@ -22,16 +26,36 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["./components/*"],
-      "@/app/*": ["./app/*"],
-      "@/pages/*": ["./pages/*"],
-      "@/utils/*": ["./utils/*"],
-      "@/entities/*": ["./entities/*"],
-      "@/features/*": ["./features/*"],
-      "@/widgets/*": ["./widgets/*"],
-      "@/shared/*": ["./shared/*"],
-      "@/types/*": ["./types/*"],
-      "@/*": ["./*"]
+      "@/components/*": [
+        "./components/*"
+      ],
+      "@/app/*": [
+        "./app/*"
+      ],
+      "@/pages/*": [
+        "./pages/*"
+      ],
+      "@/utils/*": [
+        "./utils/*"
+      ],
+      "@/entities/*": [
+        "./entities/*"
+      ],
+      "@/features/*": [
+        "./features/*"
+      ],
+      "@/widgets/*": [
+        "./widgets/*"
+      ],
+      "@/shared/*": [
+        "./shared/*"
+      ],
+      "@/types/*": [
+        "./types/*"
+      ],
+      "@/*": [
+        "./*"
+      ]
     }
   },
   "include": [
@@ -41,7 +65,10 @@
     ".next/types/**/*.ts",
     "pages/signin.tsx",
     "./.next/types/**/*.ts",
-    "types/auth.d.ts"
+    "types/auth.d.ts",
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

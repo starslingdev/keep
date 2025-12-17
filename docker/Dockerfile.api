@@ -41,10 +41,31 @@ ENV PIP_DEFAULT_TIMEOUT=100 \
 
 RUN pip install "poetry==$POETRY_VERSION"
 RUN python -m venv /venv
+
 COPY pyproject.toml poetry.lock ./
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main && \
-    /venv/bin/python -m pip install --upgrade -r requirements.txt && \
-    pip uninstall -y poetry
+
+# Export requirements
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main
+
+# Install dependencies in smaller batches to create smaller layers
+# Batch 1: Core dependencies (~50MB)
+RUN head -50 requirements.txt > requirements_batch1.txt && \
+    /venv/bin/python -m pip install --no-cache-dir -r requirements_batch1.txt && \
+    rm requirements_batch1.txt
+
+# Batch 2: More dependencies (~50MB)
+RUN sed -n '51,100p' requirements.txt > requirements_batch2.txt && \
+    /venv/bin/python -m pip install --no-cache-dir -r requirements_batch2.txt && \
+    rm requirements_batch2.txt
+
+# Batch 3: Remaining dependencies (~50MB)
+RUN sed -n '101,$p' requirements.txt > requirements_batch3.txt && \
+    /venv/bin/python -m pip install --no-cache-dir -r requirements_batch3.txt && \
+    rm requirements_batch3.txt
+
+# Clean up
+RUN pip uninstall -y poetry && \
+    rm requirements.txt
 COPY keep keep
 COPY ee keep/ee
 COPY examples examples

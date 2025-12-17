@@ -29,6 +29,42 @@ logger = logging.getLogger(__name__)
 
 
 @router.get(
+    "/remediation/status/{fingerprint}",
+    description="Get AI remediation status for an alert",
+)
+def get_remediation_status(
+    fingerprint: str,
+    authenticated_entity: AuthenticatedEntity = Depends(
+        IdentityManagerFactory.get_auth_verifier(["read:alert"])
+    ),
+):
+    """
+    Get the current AI remediation status and results for an alert.
+    """
+    tenant_id = authenticated_entity.tenant_id
+    
+    enrichment = get_enrichment(tenant_id=tenant_id, fingerprint=fingerprint)
+    
+    if not enrichment:
+        return {
+            "status": "none",
+            "ai_remediation_status": None,
+        }
+    
+    enrichments = enrichment.enrichments or {}
+    
+    return {
+        "status": "found",
+        "ai_remediation_status": enrichments.get("ai_remediation_status"),
+        "ai_rca_summary": enrichments.get("ai_rca_summary"),
+        "ai_rca_full_report": enrichments.get("ai_rca_full_report"),
+        "ai_pr_url": enrichments.get("ai_pr_url"),
+        "ai_error_message": enrichments.get("ai_error_message"),
+        "ai_job_id": enrichments.get("ai_job_id"),
+    }
+
+
+@router.get(
     "/stats",
     description="Get stats for the AI Landing Page",
     include_in_schema=False,
@@ -194,6 +230,34 @@ async def trigger_ai_remediation(
     
     # Generate job ID
     job_id = str(uuid4())
+    
+    # Mark as pending IMMEDIATELY (before starting background task)
+    # This ensures the frontend sees "pending" status right away
+    from datetime import datetime
+    from keep.api.core.db import _enrich_entity
+    from keep.api.models.action_type import ActionType
+    
+    pending_enrichment = {
+        "ai_remediation_status": "pending",
+        "ai_remediation_started_at": datetime.utcnow().isoformat(),
+        "ai_job_id": job_id,
+    }
+    
+    _enrich_entity(
+        session=session,
+        tenant_id=tenant_id,
+        fingerprint=fingerprint,
+        enrichments=pending_enrichment,
+        action_type=ActionType.AI_REMEDIATION_STARTED,
+        action_callee=user_email,
+        action_description="AI remediation started",
+    )
+    session.commit()
+    
+    logger.info(
+        "Marked entity as pending for AI remediation",
+        extra={"fingerprint": fingerprint, "job_id": job_id},
+    )
     
     # Enqueue async job
     if REDIS:

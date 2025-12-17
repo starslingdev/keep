@@ -3,7 +3,11 @@ services:
     extends:
       file: docker-compose.common.yml
       service: keep-frontend-common
-    image: us-central1-docker.pkg.dev/keephq/keep/keep-ui
+    build:
+      context: ./keep-ui
+      dockerfile: ../docker/Dockerfile.ui
+      # Build for native platform (arm64 on Mac) for faster local builds
+    image: keep-frontend-local:latest
     environment:
       - AUTH_TYPE=NO_AUTH
       - API_URL=http://keep-backend:8080
@@ -16,11 +20,16 @@ services:
     extends:
       file: docker-compose.common.yml
       service: keep-backend-common
-    image: us-central1-docker.pkg.dev/keephq/keep/keep-api
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+      # Build for native platform (arm64 on Mac) for faster local builds
+    image: keep-backend-local:latest
     environment:
       - AUTH_TYPE=NO_AUTH
       - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
       - KEEP_METRICS=true
+      - KEEP_ENABLE_AI_REMEDIATION=true
     volumes:
       - ./state:/state
 

@@ -8,7 +8,8 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
-from keep.api.core.db import get_tenant
+from sqlmodel import select
+from keep.api.models.db.tenant import Tenant
 from keep.api.consts import KEEP_AI_REMEDIATION_ENABLED
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,8 @@ class TenantFeaturesBl:
             return False
         
         # Get tenant configuration
-        tenant = get_tenant(self.tenant_id, self.session)
+        statement = select(Tenant).where(Tenant.id == self.tenant_id)
+        tenant = self.session.exec(statement).first()
         
         if not tenant:
             logger.warning(
@@ -85,7 +87,8 @@ class TenantFeaturesBl:
         Returns:
             Quota limit or None for unlimited
         """
-        tenant = get_tenant(self.tenant_id, self.session)
+        statement = select(Tenant).where(Tenant.id == self.tenant_id)
+        tenant = self.session.exec(statement).first()
         
         if not tenant or not tenant.configuration:
             return None

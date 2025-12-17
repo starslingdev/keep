@@ -29,42 +29,26 @@ aws ecr get-login-password --region $AWS_REGION | \
 echo "✓ Logged in"
 echo ""
 
-# Build backend
-echo "🏗️  Building backend image (this may take 3-5 minutes)..."
-echo "   Stage 1: Setting up Python environment..."
-echo "   Stage 2: Installing dependencies..."
-echo "   Stage 3: Copying application files..."
-docker build -f docker/Dockerfile.api -t keep-backend:latest . --progress=plain 2>&1 | \
-  while IFS= read -r line; do
-    echo "$line" | grep -E "^#[0-9]+ \[" && echo "   $line" || true
-  done
-echo "✓ Backend built"
+# Build backend for linux/amd64 (required for ECS Fargate)
+echo "🏗️  Building backend image for linux/amd64 platform..."
+echo "   (Building for ECS Fargate - this may take 5-10 minutes on Apple Silicon)"
+docker build \
+  --platform linux/amd64 \
+  -f docker/Dockerfile.api \
+  -t keep-backend:latest \
+  . 
+echo "✓ Backend built for linux/amd64"
 echo ""
 
-# Build frontend
-echo "🏗️  Building frontend image..."
-echo ""
-echo "⚠️  Frontend build requires 4-6 GB Docker memory"
-echo "   If this fails with 'cannot allocate memory', either:"
-echo "   1. Increase Docker Desktop memory (Settings → Resources → Memory)"
-echo "   2. Or run: ./scripts/build_frontend_local.sh (faster alternative)"
-echo ""
-echo "   Building... (this may take 5-10 minutes)"
-
-if docker build -f docker/Dockerfile.ui -t keep-frontend:latest ./keep-ui 2>&1 | \
-   tee /tmp/docker-build-frontend.log | \
-   grep --line-buffered -E "^\#[0-9]+ |FINISHED|exporting" | \
-   sed 's/^/   /'; then
-  echo "✓ Frontend built"
-else
-  echo ""
-  echo "❌ Frontend build failed (likely out of memory)"
-  echo ""
-  echo "Run this instead:"
-  echo "  ./scripts/build_frontend_local.sh"
-  echo ""
-  exit 1
-fi
+# Build frontend for linux/amd64 (required for ECS Fargate)
+echo "🏗️  Building frontend image for linux/amd64 platform..."
+echo "   (Building for ECS Fargate - this may take 5-10 minutes on Apple Silicon)"
+docker build \
+  --platform linux/amd64 \
+  -f docker/Dockerfile.ui \
+  -t keep-frontend:latest \
+  ./keep-ui
+echo "✓ Frontend built for linux/amd64"
 echo ""
 
 # Tag images
@@ -74,14 +58,28 @@ docker tag keep-frontend:latest $ECR/keep-frontend:latest
 echo "✓ Images tagged"
 echo ""
 
-# Push to ECR
-echo "📤 Pushing backend to ECR..."
-docker push $ECR/keep-backend:latest
-echo "✓ Backend pushed"
+# Push to ECR with retries
+echo "📤 Pushing backend to ECR (large image, may take 5-10 min)..."
+for i in {1..100}; do
+  if docker push $ECR/keep-backend:latest; then
+    echo "✓ Backend pushed"
+    break
+  else
+    echo "⚠️  Push failed, retrying ($i/3)..."
+    sleep 5
+  fi
+done
 
 echo "📤 Pushing frontend to ECR..."
-docker push $ECR/keep-frontend:latest
-echo "✓ Frontend pushed"
+for i in {1..3}; do
+  if docker push $ECR/keep-frontend:latest; then
+    echo "✓ Frontend pushed"
+    break
+  else
+    echo "⚠️  Push failed, retrying ($i/3)..."
+    sleep 5
+  fi
+done
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

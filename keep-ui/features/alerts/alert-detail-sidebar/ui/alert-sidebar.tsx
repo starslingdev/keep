@@ -167,6 +167,7 @@ export const AlertSidebar = ({
                           ai_remediation_status: alert.ai_remediation_status as any,
                           ai_pr_url: alert.ai_pr_url,
                           ai_rca_summary: alert.ai_rca_summary,
+                          ai_rca_full_report: alert.ai_rca_full_report,
                           ai_error_message: alert.ai_error_message,
                         }}
                         onRemediationStarted={handleRefresh}

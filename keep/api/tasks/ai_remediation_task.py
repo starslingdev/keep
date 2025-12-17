@@ -111,13 +111,7 @@ def process_ai_remediation(
             # Initialize business logic handler
             remediation_bl = AIRemediationBl(tenant_id=tenant_id, session=session)
             
-            # Mark as pending in enrichment
-            remediation_bl.mark_remediation_pending(
-                fingerprint=fingerprint,
-                job_id=job_id,
-                started_at=started_at,
-                user_email=user_email,
-            )
+            # Note: "pending" status is already set by the route before this task starts
             
             # Step 1: Fetch entity context
             logger.info(

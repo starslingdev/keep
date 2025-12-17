@@ -28,8 +28,29 @@ Parameters:
     Description: Sentry auth token (optional)
     Default: ""
     NoEcho: true
+  
+  AnthropicApiKey:
+    Type: String
+    Description: Anthropic API key for AI-powered root cause analysis
+    Default: ""
+    NoEcho: true
+
+Conditions:
+  HasAnthropicApiKey: !Not [!Equals [!Ref AnthropicApiKey, ""]]
 
 Resources:
+  # Secrets Manager for API Keys
+  AnthropicApiKeySecret:
+    Type: AWS::SecretsManager::Secret
+    Condition: HasAnthropicApiKey
+    Properties:
+      Name: !Sub ${Environment}-continuum-anthropic-api-key
+      Description: Anthropic API key for Continuum AI RCA
+      SecretString: !Ref AnthropicApiKey
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
   # VPC and Networking
   VPC:
     Type: AWS::EC2::VPC
@@ -207,7 +228,7 @@ Resources:
       DBInstanceIdentifier: !Sub ${Environment}-continuum-db
       DBName: continuum
       Engine: postgres
-      EngineVersion: '15.4'
+      EngineVersion: '15.15'
       DBInstanceClass: db.t4g.micro
       AllocatedStorage: 20
       StorageType: gp3
@@ -237,7 +258,6 @@ Resources:
   RedisCluster:
     Type: AWS::ElastiCache::CacheCluster
     Properties:
-      CacheClusterId: !Sub ${Environment}-continuum-redis
       Engine: redis
       CacheNodeType: cache.t4g.micro
       NumCacheNodes: 1
@@ -284,11 +304,13 @@ Resources:
       Protocol: HTTP
       VpcId: !Ref VPC
       TargetType: ip
-      HealthCheckPath: /
+      HealthCheckPath: /signin
       HealthCheckIntervalSeconds: 30
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
       UnhealthyThresholdCount: 3
+      Matcher:
+        HttpCode: 200-399
 
   ALBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -414,6 +436,11 @@ Resources:
               Value: !Ref SentryAuthToken
             - Name: KEEP_AI_CREATE_GITHUB_PR
               Value: 'false'
+          Secrets: !If
+            - HasAnthropicApiKey
+            - - Name: ANTHROPIC_API_KEY
+                ValueFrom: !Ref AnthropicApiKeySecret
+            - !Ref AWS::NoValue
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -461,6 +488,11 @@ Resources:
               Value: !Ref SentryAuthToken
             - Name: KEEP_AI_CREATE_GITHUB_PR
               Value: 'false'
+          Secrets: !If
+            - HasAnthropicApiKey
+            - - Name: ANTHROPIC_API_KEY
+                ValueFrom: !Ref AnthropicApiKeySecret
+            - !Ref AWS::NoValue
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -476,8 +508,8 @@ Resources:
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
-      Cpu: '256'
-      Memory: '512'
+      Cpu: '512'
+      Memory: '1024'
       ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
       TaskRoleArn: !GetAtt ECSTaskRole.Arn
       ContainerDefinitions:
@@ -488,6 +520,16 @@ Resources:
           Environment:
             - Name: NEXT_PUBLIC_API_URL
               Value: !Sub http://${LoadBalancer.DNSName}/api
+            - Name: API_URL
+              Value: !Sub http://${LoadBalancer.DNSName}/api
+            - Name: AUTH_TYPE
+              Value: db
+            - Name: NEXTAUTH_URL
+              Value: !Sub http://${LoadBalancer.DNSName}
+            - Name: NEXTAUTH_SECRET
+              Value: !Sub ${Environment}-continuum-secret-change-me
+            - Name: PUSHER_DISABLED
+              Value: 'true'
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -544,6 +586,7 @@ Resources:
       TaskDefinition: !Ref FrontendTaskDefinition
       DesiredCount: 1
       LaunchType: FARGATE
+      HealthCheckGracePeriodSeconds: 120
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
@@ -586,3 +629,7 @@ Outputs:
     Export:
       Name: !Sub ${Environment}-continuum-cluster
 
+  AnthropicApiKeySecretArn:
+    Condition: HasAnthropicApiKey
+    Description: ARN of the Anthropic API key secret (update via AWS Console)
+    Value: !Ref AnthropicApiKeySecret
