@@ -322,7 +322,7 @@ Resources:
       Port: 80
       Protocol: HTTP
 
-  # NextAuth routes must stay on frontend - only NextAuth.js specific endpoints
+  # NextAuth routes must stay on frontend - only NextAuth.js specific endpoints (max 5 values)
   NextAuthListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
@@ -336,10 +336,24 @@ Resources:
             - /api/auth/signin*
             - /api/auth/signout*
             - /api/auth/session*
-            - /api/auth/csrf*
             - /api/auth/providers*
       ListenerArn: !Ref ALBListener
       Priority: 10
+
+  # Additional NextAuth routes (csrf, error)
+  NextAuthListenerRule2:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref FrontendTargetGroup
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /api/auth/csrf*
+            - /api/auth/error*
+      ListenerArn: !Ref ALBListener
+      Priority: 11
 
   BackendListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
@@ -455,6 +469,8 @@ Resources:
               Value: !Ref SentryAuthToken
             - Name: KEEP_AI_CREATE_GITHUB_PR
               Value: 'false'
+            - Name: KEEP_JWT_SECRET
+              Value: !Sub ${Environment}-continuum-secret-change-me
           Secrets: !If
             - HasAnthropicApiKey
             - - Name: ANTHROPIC_API_KEY
@@ -507,6 +523,8 @@ Resources:
               Value: !Ref SentryAuthToken
             - Name: KEEP_AI_CREATE_GITHUB_PR
               Value: 'false'
+            - Name: KEEP_JWT_SECRET
+              Value: !Sub ${Environment}-continuum-secret-change-me
           Secrets: !If
             - HasAnthropicApiKey
             - - Name: ANTHROPIC_API_KEY

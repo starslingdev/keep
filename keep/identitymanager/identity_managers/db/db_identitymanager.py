@@ -28,7 +28,7 @@ class DbIdentityManager(BaseIdentityManager):
         # initialized. It is used to set up the identity manager with the FastAPI
         self.logger.info("Adding signin endpoint")
 
-        @app.post("/signin")
+        @app.post("/api/signin")
         def signin(body: dict):
             # block empty passwords (e.g. user provisioned)
             if not body.get("password"):
@@ -49,10 +49,14 @@ class DbIdentityManager(BaseIdentityManager):
             if not jwt_secret:
                 self.logger.info("missing KEEP_JWT_SECRET environment variable")
                 raise HTTPException(status_code=401, detail="Missing JWT secret")
+            
+            # Use the user's actual tenant_id for multi-tenant support
+            user_tenant_id = user.tenant_id
+            
             token = jwt.encode(
                 {
                     "email": user.username,
-                    "tenant_id": SINGLE_TENANT_UUID,
+                    "tenant_id": user_tenant_id,
                     "role": user.role,
                 },
                 jwt_secret,
@@ -61,7 +65,7 @@ class DbIdentityManager(BaseIdentityManager):
             # return the token
             return {
                 "accessToken": token,
-                "tenantId": SINGLE_TENANT_UUID,
+                "tenantId": user_tenant_id,
                 "email": user.username,
                 "role": user.role,
             }

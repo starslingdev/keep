@@ -2043,15 +2043,15 @@ def get_user_by_api_key(api_key: str):
     return api_key.created_by
 
 
-# this is only for single tenant
+# Multi-tenant user authentication by email/username and password
 def get_user(username, password, update_sign_in=True):
     from keep.api.models.db.user import User
 
     password_hash = hashlib.sha256(password.encode()).hexdigest()
     with Session(engine, expire_on_commit=False) as session:
+        # Search across all tenants by username/email
         user = session.exec(
             select(User)
-            .where(User.tenant_id == SINGLE_TENANT_UUID)
             .where(User.username == username)
             .where(User.password_hash == password_hash)
         ).first()
