@@ -33,7 +33,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/public/signup", {
+      const response = await fetch("/backend/public/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -54,7 +54,8 @@ export const proxy = auth(async (request) => {
     !pathname.startsWith("/signup") &&
     !pathname.startsWith("/health") &&
     !pathname.startsWith("/error") &&
-    !pathname.startsWith("/api/healthcheck")
+    !pathname.startsWith("/api/healthcheck") &&
+    !pathname.startsWith("/backend/public")
   ) {
     const redirectTo = request.nextUrl.href || "/incidents";
     console.log(

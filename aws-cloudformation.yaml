@@ -322,6 +322,20 @@ Resources:
       Port: 80
       Protocol: HTTP
 
+  # NextAuth routes must stay on frontend (higher priority)
+  NextAuthListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref FrontendTargetGroup
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - /api/auth/*
+      ListenerArn: !Ref ALBListener
+      Priority: 1
+
   BackendListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
@@ -334,7 +348,7 @@ Resources:
             - /api/*
             - /healthcheck
       ListenerArn: !Ref ALBListener
-      Priority: 1
+      Priority: 2
 
   # ECS Cluster
   ECSCluster:
